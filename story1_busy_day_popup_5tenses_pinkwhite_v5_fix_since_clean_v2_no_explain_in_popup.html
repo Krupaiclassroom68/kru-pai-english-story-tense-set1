@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Kru Pai Classroom — 5 Tenses Story Builder (Popup Choice)</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700;900&family=Rubik:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+ --pink:#ec4899;
+ --pink2:#fb7185;
+ --bg:#ffffff;
+ --card:#ffffff;
+ --ink:#111111;
+ --muted:#4b5563;
+ --line:rgba(236,72,153,.28);
+ --shadow:0 10px 28px rgba(0,0,0,.10);
+ --ok:#16a34a;
+ --bad:#dc2626;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:"Noto Sans Thai","Rubik",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
+
+.header{
+ position:sticky; top:0; z-index:50;
+ background:#fff;
+ border-bottom:1px solid var(--line);
+ box-shadow:0 8px 18px rgba(236,72,153,.10);
+}
+.banner{
+ max-width:1100px;margin:auto;
+ display:flex;align-items:center;gap:12px;
+ padding:12px 12px 10px;
+}
+.logo{
+ width:44px;height:44px;border-radius:14px;
+ display:grid;place-items:center;
+ background:conic-gradient(from 0deg,var(--pink),#ffd1e7,var(--pink2),var(--pink));
+ color:#fff;font-weight:900;
+ box-shadow:0 0 16px rgba(236,72,153,.22);
+}
+.brand{font-weight:900;font-size:clamp(16px,2.6vw,24px)}
+.sub{margin-left:auto;font-size:12px;color:var(--muted);text-align:right}
+.badge{
+ display:inline-block;margin-top:4px;
+ font-weight:900;font-size:12px;
+ padding:6px 10px;border-radius:999px;
+ border:1px solid var(--line);
+ background:rgba(236,72,153,.08);
+}
+
+.wrap{max-width:1100px;margin:0 auto;padding:14px 12px 28px}
+.card{
+ background:var(--card);
+ border:1px solid var(--line);
+ border-radius:18px;
+ box-shadow:var(--shadow);
+}
+.hide{display:none!important}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.center{text-align:center}
+.bigtitle{font-weight:900;font-size:clamp(22px,4vw,36px)}
+.tagline{color:var(--muted);font-size:clamp(15px,2.9vw,19px);line-height:1.65}
+
+.input{
+ display:flex;gap:10px;align-items:center;justify-content:center;
+ background:rgba(236,72,153,.06);
+ border:1px solid var(--line);
+ padding:10px 12px;border-radius:14px;
+ width:min(560px,96%);
+}
+.input input{flex:1;border:none;background:transparent;outline:none;color:var(--ink);font-size:18px;min-width:160px}
+
+.btn{
+ border:none; cursor:pointer;
+ padding:12px 14px;border-radius:14px;
+ font-weight:900; letter-spacing:.2px;
+ color:#fff;
+ background: linear-gradient(180deg, #f9a8d4, var(--pink));
+ box-shadow: 0 10px 0 rgba(236,72,153,.45), 0 18px 30px rgba(236,72,153,.16);
+ transform:translateY(0);
+ transition:.15s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(2px)}
+.btn.ghost{
+ background:#fff;
+ color:#111;
+ border:1px solid var(--line);
+ box-shadow:var(--shadow);
+}
+.btn.danger{
+ background:linear-gradient(180deg,#ffb4c0,#fb7185);
+ box-shadow: 0 10px 0 rgba(251,113,133,.45), 0 18px 30px rgba(251,113,133,.14);
+}
+.btn.small{padding:10px 12px;font-size:14px}
+
+/* Story */
+.storyBox{
+ padding:16px;
+ background:linear-gradient(180deg, rgba(236,72,153,.06), rgba(255,255,255,.98));
+ border-radius:16px;
+ border:1px solid var(--line);
+}
+.storyText{
+ font-size:clamp(18px,3.2vw,24px);
+ line-height:1.75;
+ font-weight:800;
+}
+.blank{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ min-width:110px;
+ padding:6px 10px;
+ margin:0 2px;
+ border-radius:12px;
+ border:2px dashed rgba(236,72,153,.55);
+ background:rgba(255,255,255,.92);
+ color:#111;
+ cursor:pointer;
+ font-weight:900;
+ box-shadow:0 8px 18px rgba(0,0,0,.06);
+ transform:translateY(0);
+ transition:.12s;
+}
+.blank:hover{transform:translateY(-1px)}
+.blank.filled{border-style:solid}
+.blank .num{font-size:12px;color:var(--muted);margin-left:6px;font-weight:900}
+
+.hintLine{
+ margin-top:10px;
+ padding:10px 12px;
+ border-radius:14px;
+ border:1px solid var(--line);
+ background:#fff;
+ color:var(--muted);
+ font-weight:800;
+}
+
+/* Modal */
+.modalBack{
+ position:fixed; inset:0;
+ background:rgba(17,24,39,.45);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:14px;
+ z-index:100;
+}
+.modal{
+ width:min(720px,100%);
+ background:#fff;
+ border-radius:18px;
+ border:1px solid var(--line);
+ box-shadow:0 24px 60px rgba(0,0,0,.25);
+ overflow:hidden;
+}
+.modalHead{
+ padding:14px 14px 10px;
+ border-bottom:1px solid var(--line);
+ background:rgba(236,72,153,.06);
+}
+.modalTitle{font-weight:900;font-size:18px}
+.modalSub{font-size:13px;color:var(--muted);margin-top:4px;font-weight:800}
+.modalBody{padding:14px}
+.optGrid{display:grid;gap:10px}
+.optBtn{
+ width:100%;
+ text-align:left;
+ padding:14px 14px;
+ border-radius:14px;
+ border:2px solid rgba(236,72,153,.22);
+ background:#fff;
+ font-weight:900;
+ cursor:pointer;
+ font-size:18px;
+ box-shadow:0 10px 20px rgba(0,0,0,.06);
+ transition:.12s;
+}
+.optBtn:hover{transform:translateY(-1px); border-color:rgba(236,72,153,.55)}
+.modalFoot{display:flex;gap:10px;justify-content:flex-end;padding:12px 14px;border-top:1px solid var(--line)}
+
+/* Result */
+.msg{margin-top:12px;display:flex;justify-content:center;}
+.msg span{
+ display:inline-block;
+ padding:10px 12px;border-radius:14px;
+ border:1px solid var(--line);
+ background:#fff;
+ font-weight:900;
+}
+.ok{color:var(--ok)}
+.bad{color:var(--bad)}
+.reviewList{margin-top:12px;display:grid;gap:10px;text-align:left}
+.reviewItem{
+ border:1px solid var(--line);
+ border-radius:14px;
+ padding:12px;
+ background:#fff;
+}
+.reviewTop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.reviewTop b{font-size:14px}
+.pill{
+ padding:6px 10px;border-radius:999px;border:1px solid var(--line);
+ background:rgba(236,72,153,.08);
+ font-weight:900;font-size:12px;
+}
+.small{color:var(--muted);font-weight:800;line-height:1.6;margin-top:6px}
+
+/* ===== Checked marks on blanks ===== */
+.blank.correct{
+ border-color: rgba(22,163,74,.65);
+ background: rgba(22,163,74,.06);
+}
+.blank.wrong{
+ border-color: rgba(220,38,38,.65);
+ background: rgba(220,38,38,.06);
+}
+.blank .mark{
+ display:inline-grid;
+ place-items:center;
+ width:22px;height:22px;
+ border-radius:999px;
+ margin-left:8px;
+ font-size:14px;
+ font-weight:900;
+ line-height:1;
+}
+.blank.correct .mark{ background:rgba(22,163,74,.12); color:var(--ok); border:1px solid rgba(22,163,74,.35);}
+.blank.wrong .mark{ background:rgba(220,38,38,.10); color:var(--bad); border:1px solid rgba(220,38,38,.35);}
+
+/* ===== Teddy praise overlay ===== */
+#teddyBack{
+ position:fixed; inset:0;
+ background:rgba(17,24,39,.50);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ padding:14px;
+ z-index:120;
+}
+.teddyCard{
+ width:min(720px,100%);
+ background:#fff;
+ border-radius:20px;
+ border:1px solid var(--line);
+ box-shadow:0 24px 70px rgba(0,0,0,.28);
+ overflow:hidden;
+}
+.teddyTop{
+ padding:16px 16px 12px;
+ background:linear-gradient(180deg, rgba(236,72,153,.12), rgba(255,255,255,.96));
+ border-bottom:1px solid var(--line);
+ text-align:center;
+}
+.teddyEmoji{
+ font-size:64px;
+ filter: drop-shadow(0 12px 18px rgba(236,72,153,.18));
+}
+.teddyTitle{
+ margin-top:8px;
+ font-weight:900;
+ font-size:22px;
+}
+.teddyBody{
+ padding:14px 16px 16px;
+ text-align:center;
+ color:var(--muted);
+ font-weight:800;
+ line-height:1.6;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+ <div class="banner">
+ <div class="logo">KP</div>
+ <div class="brand">Kru Pai Classroom — <span style="color:var(--pink)">5 Tenses Story Builder</span></div>
+ <div class="sub">
+ เติมคำแบบเรื่องราว • Popup Choice<br/>
+ <span class="badge">Present • Continuous • Past • Future • Perfect</span>
+ </div>
+ </div>
+</div>
+
+<div class="wrap">
+ <!-- LOGIN -->
+ <div id="screenLogin" class="card" style="padding:18px;display:grid;gap:12px;justify-items:center;text-align:center">
+ <div class="bigtitle">MISSION: เล่าเรื่องให้เป็น ด้วย 5 Tenses</div>
+ <div class="tagline">
+ แบบฝึกนี้เป็น “เรื่องราวสั้น ๆ” ที่มีช่องว่างหลายจุดให้เติม<br/>
+ คลิกช่องว่าง → ระบบจะแสดงป๊อปอัปตัวเลือก → กดเลือกแล้วคำจะเข้าไปอยู่ในประโยคทันที
+ </div>
+
+ <div class="card" style="width:min(920px,96%);padding:14px;background:rgba(236,72,153,.06)">
+ <div style="font-weight:900;color:#111;font-size:18px">🎮 วิธีการเล่น (ชัด ๆ)</div>
+ <div class="tagline" style="margin-top:8px;text-align:left">
+ 1) ใส่ชื่อเล่น แล้วกด <b>เริ่มทำแบบฝึก</b><br/>
+ 2) คลิกช่องว่างแต่ละจุด แล้วเลือกคำตอบจากป๊อปอัป<br/>
+ 3) คลิกช่องเดิมซ้ำได้ เพื่อเปลี่ยนคำตอบ<br/>
+ 4) เมื่อเติมครบทุกช่อง กด <b>ตรวจคำตอบ</b> เพื่อดูคะแนนและเฉลย
+ </div>
+ </div>
+
+ <div class="input">
+ <span style="font-weight:900">ชื่อเล่น:</span>
+ <input id="playerName" placeholder="เช่น Emma / Aladin / Kru Pai"/>
+ </div>
+ <div class="row">
+ <button class="btn" onclick="start()">เริ่มทำแบบฝึก ▶</button>
+ </div>
+ </div>
+
+ <!-- STORY -->
+ <div id="screenStory" class="card hide" style="padding:18px">
+ <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+ <div>
+ <div class="bigtitle" style="font-size:28px" id="storyTitle">—</div>
+ <div class="tagline">ผู้เล่น: <b id="who">-</b> • คลิกช่องว่างเพื่อเลือกคำตอบ</div>
+ </div>
+ <div class="row">
+ <button class="btn ghost" onclick="resetAll()">เริ่มใหม่</button>
+ <button class="btn danger" onclick="checkAll()">ตรวจคำตอบ ✓</button>
+ <button class="btn" id="listenBtn" onclick="speakStory()" disabled>🔊 ฟังประโยค</button>
+ </div>
+ </div>
+
+ <div class="hintLine" id="hintLine"></div>
+ <div class="tagline" style="margin-top:10px">💡 หลังจากกด “ตรวจคำตอบ” แล้ว จะกด <b>🔊 ฟังประโยค</b> เพื่อฟังการออกเสียงประโยคเฉลยได้ (เสียงจากเบราว์เซอร์)</div>
+
+ <div class="storyBox" style="margin-top:12px">
+ <div class="storyText" id="storyText"></div>
+ </div>
+
+ <div class="msg" id="msg"></div>
+ <div id="review" class="reviewList"></div>
+
+ <div class="row" style="margin-top:14px">
+ <button class="btn ghost" onclick="backToLogin()">⬅ กลับหน้าแรก</button>
+ </div>
+ </div>
+</div>
+
+<!-- Modal -->
+<div id="modalBack" class="modalBack" role="dialog" aria-modal="true">
+ <div class="modal">
+ <div class="modalHead">
+ <div class="modalTitle" id="modalTitle">เลือกคำตอบ</div>
+ <div class="modalSub" id="modalSub">—</div>
+ </div>
+ <div class="modalBody">
+ <div class="optGrid" id="optGrid"></div>
+ </div>
+ <div class="modalFoot">
+ <button class="btn ghost" onclick="closeModal()">ปิด</button>
+ </div>
+ </div>
+</div>
+
+<script>
+const DATA = {"story": {"title": "A Busy Day — 5 Tenses Story", "intro_th": "คลิกที่ช่องว่างเพื่อเลือกคำตอบ (ระบบป๊อปอัป) และคลิกซ้ำเพื่อเปลี่ยนคำตอบได้", "intro_en": "Click each blank to choose an answer (popup). Click again to change it.", "text_parts": ["I usually ", {"blank": 1}, " at 6 o'clock ⏰ ", {"blank": 2}, ". ", "But today is different 😲. ", "I ", {"blank": 3}, " already ", {"blank": 4}, " my breakfast 🍳 ", {"blank": 5}, " 7 AM ⏰. ", "Right ", {"blank": 6}, ", I ", {"blank": 7}, " at my desk 💻📝. ", "Yesterday 💤, I ", {"blank": 8}, " very lazy and I ", {"blank": 9}, " anything 🙈. ", "So, tomorrow 🌈 I ", {"blank": 10}, " harder to finish my homework 💪📚."]}, "blanks": [{"id": 1, "label": "(1)", "correct": "get up", "options": ["get up", "gets up", "got up"], "explain": "Present Simple: I + V1 (habit) → get up"}, {"id": 2, "label": "(2)", "correct": "every day", "options": ["every day", "right now", "yesterday"], "explain": "คำบอกความถี่ของ Present Simple → every day"}, {"id": 3, "label": "(3)", "correct": "have", "options": ["have", "has", "had"], "explain": "Present Perfect: I + have + V3 → have"}, {"id": 4, "label": "(4)", "correct": "finished", "options": ["finished", "finish", "finishing"], "explain": "Present Perfect ใช้ V3 → finished"}, {"id": 5, "label": "(5)", "correct": "since", "options": ["since", "for", "at"], "explain": "since + จุดเริ่มเวลา (7 AM)"}, {"id": 6, "label": "(6)", "correct": "now", "options": ["now", "every day", "last night"], "explain": "คำบอกเวลาปัจจุบันขณะ → now"}, {"id": 7, "label": "(7)", "correct": "am sitting", "options": ["am sitting", "sit", "was sitting"], "explain": "Present Continuous: I am + V-ing → am sitting"}, {"id": 8, "label": "(8)", "correct": "was", "options": ["was", "am", "were"], "explain": "Past (be): I was (yesterday)"}, {"id": 9, "label": "(9)", "correct": "did not study", "options": ["did not study", "do not study", "will not study"], "explain": "Past Simple negative: did not + V1 → did not study"}, {"id": 10, "label": "(10)", "correct": "will work", "options": ["will work", "worked", "am working"], "explain": "Future: will + V1 → will work"}]};
+
+let player = "ผู้เล่น";
+let answers = {}; // blankId -> chosen text
+let activeBlank = null;
+let checked = {}; // blankId -> 'correct' | 'wrong'
+
+
+function $(id){ return document.getElementById(id); }
+function show(id, on){ $(id).classList.toggle('hide', !on); }
+
+function start(){
+ const name = ($('playerName').value || '').trim();
+ player = name || 'ผู้เล่น';
+ $('who').textContent = player;
+ $('storyTitle').textContent = DATA.story.title;
+ $('hintLine').innerHTML = `TH: ${DATA.story.intro_th}<br/>EN: ${DATA.story.intro_en}`;
+ answers = {};
+ checked = {};
+ $('msg').innerHTML = '';
+ $('review').innerHTML = '';
+ renderStory();
+ const lb=document.getElementById('listenBtn'); if(lb) lb.disabled=true;
+ show('screenLogin', false);
+ show('screenStory', true);
+}
+
+function backToLogin(){
+ show('screenStory', false);
+ show('screenLogin', true);
+}
+
+function resetAll(){
+ if(!confirm('เริ่มทำใหม่ทั้งหมด?')) return;
+ answers = {};
+ checked = {};
+ $('msg').innerHTML = '';
+ $('review').innerHTML = '';
+ renderStory();
+ const lb=document.getElementById('listenBtn'); if(lb) lb.disabled=true;
+}
+
+function renderStory(){
+ const container = $('storyText');
+ container.innerHTML = '';
+
+ DATA.story.text_parts.forEach(part => {
+ if(typeof part === 'string'){
+ container.appendChild(document.createTextNode(part));
+ return;
+ }
+ if(part.blank){
+ const id = part.blank;
+ const span = document.createElement('span');
+ span.className = 'blank' + (answers[id] ? ' filled' : '') + (checked[id] ? (' ' + checked[id]) : '');
+ span.setAttribute('data-id', id);
+ span.onclick = () => openBlank(id);
+ const label = DATA.blanks.find(b=>b.id===id).label;
+ span.innerHTML = `${answers[id] ? escapeHtml(answers[id]) : '____'} <span class="num">${label}</span>${checked[id] ? (checked[id]==='correct' ? '<span class="mark">✓</span>' : '<span class="mark">✗</span>') : ''}`;
+ container.appendChild(span);
+ return;
+ }
+ });
+}
+
+function escapeHtml(s){
+ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+function openBlank(id){
+ if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+
+ activeBlank = id;
+ const b = DATA.blanks.find(x=>x.id===id);
+ $('modalTitle').textContent = `เลือกคำตอบ ${b.label}`;
+ $('modalSub').textContent = 'คิดจากบริบทของประโยค แล้วเลือกคำที่เหมาะสม 🙂';
+ const grid = $('optGrid');
+ grid.innerHTML = '';
+
+ const opts = b.options.slice();
+ for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [opts[i],opts[j]]=[opts[j],opts[i]]; }
+
+ opts.forEach(opt => {
+ const btn = document.createElement('button');
+ btn.className = 'optBtn';
+ btn.textContent = opt;
+ btn.onclick = () => choose(opt);
+ grid.appendChild(btn);
+ });
+
+ $('modalBack').style.display = 'flex';
+}
+
+
+function openTeddy(){
+ document.getElementById('teddyBack').style.display = 'flex';
+}
+function closeTeddy(){
+ document.getElementById('teddyBack').style.display = 'none';
+ if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+}
+
+function closeModal(){
+ $('modalBack').style.display = 'none';
+ activeBlank = null;
+}
+
+function choose(opt){
+ if(activeBlank==null) return;
+ answers[activeBlank] = opt;
+ if(checked[activeBlank]) delete checked[activeBlank];
+ closeModal();
+ renderStory();
+}
+
+function filledCount(){
+ return Object.keys(answers).length;
+}
+
+
+function stripEmoji(text){
+ // Remove emoji / pictographs / symbols so TTS doesn't read them
+ return String(text)
+ .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/gu, "")
+ .replace(/[♥♡★☆✓✔✗✘]/g, "")
+ .replace(/\s+/g, " ")
+ .trim();
+}
+
+function getFilledStoryText(useCorrect=false){
+ let s = "";
+ DATA.story.text_parts.forEach(part=>{
+ if(typeof part === "string"){ s += part; return; }
+ if(part.blank){
+ const id = part.blank;
+ const b = DATA.blanks.find(x=>x.id===id);
+ const word = useCorrect ? b.correct : (answers[id] ?? "____");
+ s += word;
+ return;
+ }
+ });
+ return s.replace(/\s+/g,' ').replace(/\s([.,!?])/g,'$1').trim();
+}
+
+function speak(text){
+ if(!('speechSynthesis' in window)){
+ alert('อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง (speechSynthesis)');
+ return;
+ }
+ window.speechSynthesis.cancel();
+ text = stripEmoji(text);
+ const u = new SpeechSynthesisUtterance(text);
+ const voices = window.speechSynthesis.getVoices?.() || [];
+ const enVoice = voices.find(v => /en/i.test(v.lang)) || voices.find(v => /English/i.test(v.name));
+ if(enVoice) u.voice = enVoice;
+ u.lang = enVoice?.lang || "en-US";
+ u.rate = 0.95;
+ u.pitch = 1.05;
+ window.speechSynthesis.speak(u);
+}
+
+function speakStory(){
+ const text = getFilledStoryText(true); // read correct story after checking
+ speak(text);
+}
+
+function checkAll(){
+ const total = DATA.blanks.length;
+ if(filledCount() < total){
+ alert(`ยังเติมไม่ครบจ้า 🙂 ตอนนี้เติมแล้ว ${filledCount()}/${total}`);
+ return;
+ }
+
+ let score = 0;
+ const review = $('review');
+ review.innerHTML = '';
+
+ DATA.blanks.forEach(b => {
+ const got = answers[b.id] ?? '';
+ const ok = (got === b.correct);
+ checked[b.id] = ok ? 'correct' : 'wrong';
+ if(ok) score++;
+
+ const item = document.createElement('div');
+ item.className = 'reviewItem';
+ item.innerHTML = `
+ <div class="reviewTop">
+ <b>${b.label} คำตอบของเรา: <span style="color:${ok ? 'var(--ok)' : 'var(--bad)'}">${escapeHtml(got)}</span></b>
+ <span class="pill">${ok ? 'ถูก ✔' : 'ผิด ✘'}</span>
+ </div>
+ ${ok ? '' : `<div class="small"><b>เฉลย:</b> ${escapeHtml(b.correct)}</div>`}
+ <div class="small">${escapeHtml(b.explain)}</div>
+ `;
+ review.appendChild(item);
+ });
+
+ const pct = Math.round(score/total*100);
+ $('msg').innerHTML = `<span class="${score===total?'ok':'bad'}">คะแนน: ${score}/${total} (${pct}%)</span>`;
+ renderStory();
+ const lb=document.getElementById('listenBtn'); if(lb) lb.disabled=false;
+ if(score===total){ openTeddy(); }
+ setTimeout(()=> review.scrollIntoView({behavior:'smooth', block:'start'}), 50);
+}
+
+$('modalBack').addEventListener('click', (e)=>{
+ if(e.target === $('modalBack')) closeModal();
+});
+</script>
+
+<!-- Teddy Praise Overlay -->
+<div id="teddyBack" role="dialog" aria-modal="true">
+ <div class="teddyCard">
+ <div class="teddyTop">
+ <div class="teddyEmoji">🧸✨</div>
+ <div class="teddyTitle">เก่งมากเลย! ถูกหมดทุกช่อง 🎉</div>
+ </div>
+ <div class="teddyBody">
+ ครูตุ๊กตาขอปรบมือให้ดัง ๆ เลย 💗<br/>
+ พร้อมไปทำ “เรื่องใหม่” หรือ “ด่านรวม” ได้แล้วจ้า!
+ <div class="row" style="margin-top:14px">
+ <button class="btn" onclick="closeTeddy()">ปิด</button>
+ <button class="btn ghost" onclick="resetAll(); closeTeddy();">ทำใหม่อีกครั้ง</button>
+ </div>
+ </div>
+ </div>
+</div>
+
+</body>
+</html>
